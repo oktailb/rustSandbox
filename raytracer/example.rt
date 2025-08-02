@@ -1,0 +1,48 @@
+[
+  {
+    "Common": {
+      "Classification": "Circle",
+      "Name": "ACME",
+      "Position": {
+        "X": 400,
+        "Y": 300,
+        "Z": 0
+      },
+      "Orientation": {
+        "X": 1,
+        "Y": 1,
+        "Z": 1
+      },
+      "Color": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 0
+      }
+    },
+    "Radius": 200
+  },
+  {
+    "Common": {
+      "Classification": "Square",
+      "Name": "ACME",
+      "Position": {
+        "X": 10,
+        "Y": 20,
+        "Z": 42
+      },
+      "Orientation": {
+        "X": 10,
+        "Y": 20,
+        "Z": 42
+      },
+      "Color": {
+        "R": 255,
+        "G": 0,
+        "B": 255,
+        "A": 0
+      }
+    },
+    "Cote": 5.5
+  }
+]
