@@ -25,6 +25,25 @@ impl AsPoint for Square {
 
 impl Drawable for Square {
     fn draw(&self, canvas: &mut Canvas<Window>) {
-        println!("Je suis un carré de côté {}.", self.cote);
+        let coord_x = self.as_point().x;
+        let coord_y = self.as_point().y;
+        let cote = self.cote as i32;
+
+        canvas.set_draw_color(Color::RGB(
+            self.common.color.r,
+            self.common.color.g,
+            self.common.color.b,
+        ));
+	let mut x = coord_x;
+	let mut y = coord_y;
+	
+        while x < (coord_x + cote) {
+            y = coord_y;
+            while y < (coord_y + cote) {
+                canvas.draw_point((x, y)).unwrap();
+                y = y + 1;
+            }
+            x = x + 1;
+        }
     }
 }
