@@ -6,6 +6,7 @@ use sdl3::pixels::Color;
 use sdl3::render::Canvas;
 use sdl3::video::Window;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
@@ -35,10 +36,9 @@ impl Drawable for Square {
             self.common.color.b,
         ));
 	let mut x = coord_x;
-	let mut y = coord_y;
 	
         while x < (coord_x + cote) {
-            y = coord_y;
+	    let mut y = coord_y;
             while y < (coord_y + cote) {
                 canvas.draw_point((x, y)).unwrap();
                 y = y + 1;
@@ -46,4 +46,9 @@ impl Drawable for Square {
             x = x + 1;
         }
     }
+}
+
+pub fn factory(v: Value) -> Result<Box<dyn Drawable>, String> {
+    let square: Square = serde_json::from_value(v).map_err(|e| e.to_string())?;
+    Ok(Box::new(square))
 }

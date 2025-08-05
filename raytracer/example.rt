@@ -27,22 +27,68 @@
       "Classification": "Square",
       "Name": "ACME",
       "Position": {
-        "X": 10,
-        "Y": 20,
-        "Z": 42
+        "X": 40,
+        "Y": 30,
+        "Z": 0
       },
       "Orientation": {
-        "X": 10,
-        "Y": 20,
-        "Z": 42
+        "X": 1,
+        "Y": 1,
+        "Z": 1
       },
       "Color": {
-        "R": 0,
+        "R": 255,
         "G": 0,
         "B": 255,
         "A": 0
       }
     },
-    "Cote": 155
+    "Cote": 200
+  },
+  {
+    "Common": {
+      "Classification": "LightSource",
+      "Name": "Spot 1",
+      "Position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 500
+      },
+      "Orientation": {
+        "X": 1,
+        "Y": 1,
+        "Z": 1
+      },
+      "Color": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 0
+      }
+    },
+    "Mode": "Specular"
+  },
+  {
+    "Common": {
+      "Classification": "Camera",
+      "Name": "Practika",
+      "Position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 450
+      },
+      "Orientation": {
+        "X": 1,
+        "Y": 1,
+        "Z": 1
+      },
+      "Color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    "Fps": 25
   }
 ]

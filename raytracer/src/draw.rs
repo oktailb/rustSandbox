@@ -4,7 +4,6 @@ extern crate sdl3;
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
 use sdl3::{EventPump, Sdl, render::Canvas, video::Window};
-use std::time::Duration;
 
 pub struct SdlApp {
     pub sdl_context: Sdl,
@@ -53,7 +52,7 @@ pub fn draw(scene: Result<Vec<Box<dyn Drawable>>, String>, app: &mut SdlApp) {
 }
 
 pub fn event_loop(app: &mut SdlApp) {
-    let mut event_pump = &mut app.event_pump;
+    let event_pump = &mut app.event_pump;
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -69,7 +68,3 @@ pub fn event_loop(app: &mut SdlApp) {
     }
 }
 
-pub fn put_pixel(app: &mut SdlApp, x: i32, y: i32, color: sdl3::pixels::Color) {
-    app.canvas.set_draw_color(color);
-    app.canvas.draw_point((x, y)).expect("Failed to draw point");
-}

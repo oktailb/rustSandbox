@@ -56,3 +56,4 @@ pub trait Drawable: AsPoint {
         self.as_point_mut().move_delta(dx, dy, dz);
     }
 }
+
