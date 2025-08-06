@@ -1,6 +1,7 @@
 use sdl3::render::Canvas;
 use sdl3::video::Window;
 use serde::{Deserialize, Serialize};
+use std::any::Any;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
@@ -46,7 +47,11 @@ pub trait AsPoint {
     fn as_point_mut(&mut self) -> &mut Point;
 }
 
-pub trait Drawable: AsPoint {
+pub trait HasCommon {
+    fn common(&self) -> &Common;
+}
+
+pub trait Drawable: AsPoint + HasCommon {
     fn draw(&self, canvas: &mut Canvas<Window>);
     fn position(&self) -> (i32, i32, i32) {
         self.as_point().get_coords()
@@ -55,5 +60,11 @@ pub trait Drawable: AsPoint {
     fn move_delta(&mut self, dx: i32, dy: i32, dz: i32) {
         self.as_point_mut().move_delta(dx, dy, dz);
     }
+
+    fn classification(&self) -> &str {
+        &self.common().classification
+    }
+
+    fn as_any(&self) -> &dyn Any;
 }
 

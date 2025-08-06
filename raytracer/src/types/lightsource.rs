@@ -1,3 +1,4 @@
+use crate::types::common::HasCommon;
 use crate::types::common::AsPoint;
 use crate::types::common::Common;
 use crate::types::common::Drawable;
@@ -6,6 +7,7 @@ use sdl3::render::Canvas;
 use sdl3::video::Window;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::any::Any;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
@@ -23,8 +25,18 @@ impl AsPoint for LightSource {
     }
 }
 
+impl HasCommon for LightSource {
+    fn common(&self) -> &Common {
+        &self.common
+    }
+}
+
 impl Drawable for LightSource {
     fn draw(&self, canvas: &mut Canvas<Window>) {
+    }
+    
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 

@@ -3,7 +3,7 @@ mod draw;
 mod types;
 
 use conf::build_drawables_from_json;
-use draw::{draw, event_loop, init};
+use draw::draw;
 use std::env;
 extern crate sdl3;
 
@@ -12,10 +12,8 @@ fn main() -> Result<(), String> {
     if args.len() == 2 {
         let rt_file = &args[1];
 
-        let mut app = init(800, 600)?;
-        let scene = build_drawables_from_json(rt_file);
-        draw(scene, &mut app);
-        event_loop(&mut app);
+        let (scene, utils) = build_drawables_from_json(rt_file)?;
+        draw(Ok(scene), Ok(utils));
     } else {
         println!("Usage: {} ...", &args[0]);
     }

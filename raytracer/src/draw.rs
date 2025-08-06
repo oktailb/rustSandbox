@@ -35,20 +35,40 @@ pub fn init(width: u32, height: u32) -> Result<SdlApp, String> {
     })
 }
 
-pub fn draw(scene: Result<Vec<Box<dyn Drawable>>, String>, app: &mut SdlApp) {
-    app.canvas.set_draw_color(sdl3::pixels::Color::RGB(0, 0, 0)); // Black background
-    app.canvas.clear();
-    match scene {
-        Ok(list) => {
-            for item in list {
-                item.draw(&mut app.canvas);
-            }
-        }
-        Err(e) => {
-            eprintln!("Error on reading: {}", e);
-        }
+pub fn draw(scene: Result<Vec<Box<dyn Drawable>>, String>,
+	    utils: Result<Vec<Box<dyn Drawable>>, String>) {
+    match utils {
+	Ok(environement) => {
+	    for item in environement {
+		if item.classification() == "Camera" {
+
+		    if let Some(camera) = item.as_any().downcast_ref::<crate::types::camera::Camera>() {
+			let mut app = init(camera.hfov, camera.vfov).unwrap();
+			
+			app.canvas.set_draw_color(sdl3::pixels::Color::RGB(0, 0, 0));
+			app.canvas.clear();
+			match scene {
+			    Ok(ref list) => {
+				for item in list {
+				    item.draw(&mut app.canvas);
+				}
+			    }
+			    Err(ref e) => {
+				eprintln!("Error on reading objects: {}", e);
+			    }
+			}
+			app.canvas.present();
+			event_loop(&mut app);
+		    } else {
+			println!("-> Downcast failed.");
+		    }
+		}
+	    }
+	}
+	Err(e) => {
+	    eprintln!("Error on reading utils: {}", e);
+	}
     }
-    app.canvas.present();
 }
 
 pub fn event_loop(app: &mut SdlApp) {

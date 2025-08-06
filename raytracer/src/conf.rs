@@ -18,31 +18,35 @@ fn build_drawable_registry() -> HashMap<&'static str, DrawableFactory> {
     registry
 }
 
-pub fn build_drawables_from_json(rt_file: &str) -> Result<Vec<Box<dyn Drawable>>, String> {
-    let file = File::open(rt_file).unwrap();
+pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>), String> {
+    let file = File::open(rt_file).expect("Could not open file.");
     let json_reader = BufReader::new(file);
     
-    // On construit le registre une seule fois.
     let registry = build_drawable_registry();
     let values: Vec<Value> =
         serde_json::from_reader(json_reader).expect("JSON was not well-formatted");
 
     let mut drawables: Vec<Box<dyn Drawable>> = Vec::new();
+    let mut invisible_drawables: Vec<Box<dyn Drawable>> = Vec::new();
 
     for v in values {
         let classification = v["Common"]["Classification"]
             .as_str()
-            .ok_or("Champ 'Classification' manquant ou invalide")?;
-        
-        // On cherche la factory dans le registre
-        if let Some(factory_fn) = registry.get(classification) {
-            // On l'appelle pour créer l'objet
+            .ok_or("Champ 'Classification' manquant ou invalide")?
+            .to_string();
+    
+        if let Some(factory_fn) = registry.get(classification.as_str()) {
             let drawable = factory_fn(v)?;
-            drawables.push(drawable);
+            
+            if classification == "Camera" || classification == "LightSource" {
+                invisible_drawables.push(drawable);
+            } else {
+                drawables.push(drawable);
+            }
         } else {
             eprintln!("Type de classification inconnu : {}", classification);
         }
     }
 
-    Ok(drawables)
+    Ok((drawables, invisible_drawables))
 }
