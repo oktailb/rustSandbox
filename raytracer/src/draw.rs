@@ -11,12 +11,12 @@ pub struct SdlApp {
     pub event_pump: EventPump,
 }
 
-pub fn init(width: u32, height: u32) -> Result<SdlApp, String> {
+pub fn init(width: u32, height: u32, title: &String) -> Result<SdlApp, String> {
     let sdl_context = sdl3::init().map_err(|e| e.to_string())?;
     let video_subsystem = sdl_context.video().map_err(|e| e.to_string())?;
 
     let window = video_subsystem
-        .window("SDL3 Rust Example", width, height)
+        .window(&title, width, height)
         .position_centered()
         .build()
         .map_err(|e| e.to_string())?;
@@ -43,7 +43,7 @@ pub fn draw(scene: Result<Vec<Box<dyn Drawable>>, String>,
 		if item.classification() == "Camera" {
 
 		    if let Some(camera) = item.as_any().downcast_ref::<crate::types::camera::Camera>() {
-			let mut app = init(camera.hfov, camera.vfov).unwrap();
+			let mut app = init(camera.hfov, camera.vfov, &camera.common.name).unwrap();
 			
 			app.canvas.set_draw_color(sdl3::pixels::Color::RGB(0, 0, 0));
 			app.canvas.clear();
