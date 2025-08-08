@@ -1,11 +1,6 @@
 use crate::types::common::HasCommon;
-use crate::types::common::AsPoint;
 use crate::types::common::Common;
 use crate::types::common::Drawable;
-use crate::types::common::Point;
-use sdl3::pixels::Color;
-use sdl3::render::Canvas;
-use sdl3::video::Window;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::any::Any;
@@ -17,15 +12,6 @@ pub struct Square {
     cote: f32,
 }
 
-impl AsPoint for Square {
-    fn as_point(&self) -> &Point {
-        &self.common.position
-    }
-    fn as_point_mut(&mut self) -> &mut Point {
-        &mut self.common.position
-    }
-}
-
 impl HasCommon for Square {
     fn common(&self) -> &Common {
         &self.common
@@ -33,26 +19,16 @@ impl HasCommon for Square {
 }
 
 impl Drawable for Square {
-    fn draw(&self, canvas: &mut Canvas<Window>) {
-        let coord_x = self.as_point().x;
-        let coord_y = self.as_point().y;
+    fn draw(&self, cam: &crate::types::camera::Camera, x: f32, y: f32, lightsources: &Result<Vec<Box<dyn Drawable>>, String>) -> sdl3::pixels::Color {
+        let coord = self.common.position;
         let cote = self.cote as i32;
 
-        canvas.set_draw_color(Color::RGB(
+        sdl3::pixels::Color::RGBA(
             self.common.color.r,
             self.common.color.g,
             self.common.color.b,
-        ));
-	let mut x = coord_x;
-	
-        while x < (coord_x + cote) {
-	    let mut y = coord_y;
-            while y < (coord_y + cote) {
-                canvas.draw_point((x, y)).unwrap();
-                y = y + 1;
-            }
-            x = x + 1;
-        }
+            self.common.color.a,
+        )
     }
 
     fn as_any(&self) -> &dyn Any {

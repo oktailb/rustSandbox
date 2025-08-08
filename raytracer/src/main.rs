@@ -12,8 +12,8 @@ fn main() -> Result<(), String> {
     if args.len() == 2 {
         let rt_file = &args[1];
 
-        let (scene, utils) = build_drawables_from_json(rt_file)?;
-        draw(Ok(scene), Ok(utils));
+        let (scene, cameras, lightsources) = build_drawables_from_json(rt_file)?;
+        draw(Ok(scene), Ok(cameras), Ok(lightsources));
     } else {
         println!("Usage: {} ...", &args[0]);
     }

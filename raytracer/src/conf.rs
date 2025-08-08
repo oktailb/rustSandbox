@@ -18,7 +18,7 @@ fn build_drawable_registry() -> HashMap<&'static str, DrawableFactory> {
     registry
 }
 
-pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>), String> {
+pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>), String> {
     let file = File::open(rt_file).expect("Could not open file.");
     let json_reader = BufReader::new(file);
     
@@ -27,7 +27,8 @@ pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>
         serde_json::from_reader(json_reader).expect("JSON was not well-formatted");
 
     let mut drawables: Vec<Box<dyn Drawable>> = Vec::new();
-    let mut invisible_drawables: Vec<Box<dyn Drawable>> = Vec::new();
+    let mut cameras: Vec<Box<dyn Drawable>> = Vec::new();
+    let mut lightsources: Vec<Box<dyn Drawable>> = Vec::new();
 
     for v in values {
         let classification = v["Common"]["Classification"]
@@ -38,8 +39,11 @@ pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>
         if let Some(factory_fn) = registry.get(classification.as_str()) {
             let drawable = factory_fn(v)?;
             
-            if classification == "Camera" || classification == "LightSource" {
-                invisible_drawables.push(drawable);
+            if classification == "Camera"{
+                cameras.push(drawable);
+	    }
+	    else if classification == "LightSource" {
+                lightsources.push(drawable);
             } else {
                 drawables.push(drawable);
             }
@@ -48,5 +52,5 @@ pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>
         }
     }
 
-    Ok((drawables, invisible_drawables))
+    Ok((drawables, cameras, lightsources))
 }

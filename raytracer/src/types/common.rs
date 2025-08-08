@@ -1,14 +1,28 @@
-use sdl3::render::Canvas;
-use sdl3::video::Window;
-use serde::{Deserialize, Serialize};
+use glam::{vec3, Vec3};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::any::Any;
 
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "PascalCase")]
-pub struct Point {
-    pub x: i32,
-    pub y: i32,
-    pub z: i32,
+#[derive(Debug, Clone, Copy)]
+pub struct Vec3Serde(pub Vec3);
+
+impl Serialize for Vec3Serde {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let arr = [self.0.x, self.0.y, self.0.z];
+        arr.serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for Vec3Serde {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let arr: [f32; 3] = Deserialize::deserialize(deserializer)?;
+        Ok(Vec3Serde(Vec3::new(arr[0], arr[1], arr[2])))
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -25,41 +39,23 @@ pub struct Color {
 pub struct Common {
     pub classification: String,
     pub name: String,
-    pub position: Point,
-    pub orientation: Point,
+    pub position: Vec3Serde,
+    pub orientation: Vec3Serde,
     pub color: Color,
-}
-
-impl Point {
-    fn get_coords(&self) -> (i32, i32, i32) {
-        (self.x, self.y, self.z)
-    }
-
-    fn move_delta(&mut self, dx: i32, dy: i32, dz: i32) {
-        self.x += dx;
-        self.y += dy;
-        self.z += dz;
-    }
-}
-
-pub trait AsPoint {
-    fn as_point(&self) -> &Point;
-    fn as_point_mut(&mut self) -> &mut Point;
 }
 
 pub trait HasCommon {
     fn common(&self) -> &Common;
 }
 
-pub trait Drawable: AsPoint + HasCommon {
-    fn draw(&self, canvas: &mut Canvas<Window>);
-    fn position(&self) -> (i32, i32, i32) {
-        self.as_point().get_coords()
-    }
-
-    fn move_delta(&mut self, dx: i32, dy: i32, dz: i32) {
-        self.as_point_mut().move_delta(dx, dy, dz);
-    }
+pub trait Drawable: HasCommon {
+    fn draw(
+        &self,
+        cam: &crate::types::camera::Camera,
+        x: f32,
+        y: f32,
+        lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
+    ) -> sdl3::pixels::Color;
 
     fn classification(&self) -> &str {
         &self.common().classification
@@ -67,4 +63,3 @@ pub trait Drawable: AsPoint + HasCommon {
 
     fn as_any(&self) -> &dyn Any;
 }
-

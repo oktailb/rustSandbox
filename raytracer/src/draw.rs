@@ -3,7 +3,7 @@ extern crate sdl3;
 
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
-use sdl3::{EventPump, Sdl, render::Canvas, video::Window};
+use sdl3::{render::Canvas, video::Window, EventPump, Sdl};
 
 pub struct SdlApp {
     pub sdl_context: Sdl,
@@ -35,39 +35,52 @@ pub fn init(width: u32, height: u32, title: &String) -> Result<SdlApp, String> {
     })
 }
 
-pub fn draw(scene: Result<Vec<Box<dyn Drawable>>, String>,
-	    utils: Result<Vec<Box<dyn Drawable>>, String>) {
-    match utils {
-	Ok(environement) => {
-	    for item in environement {
-		if item.classification() == "Camera" {
+pub fn draw(
+    scene: Result<Vec<Box<dyn Drawable>>, String>,
+    cameras: Result<Vec<Box<dyn Drawable>>, String>,
+    lightsources: Result<Vec<Box<dyn Drawable>>, String>,
+) {
+    match cameras {
+        Ok(environement) => {
+            for item in environement {
+                if item.classification() == "Camera" {
+                    if let Some(camera) =
+                        item.as_any().downcast_ref::<crate::types::camera::Camera>()
+                    {
+                        let mut app = init(camera.hfov, camera.vfov, &camera.common.name).unwrap();
 
-		    if let Some(camera) = item.as_any().downcast_ref::<crate::types::camera::Camera>() {
-			let mut app = init(camera.hfov, camera.vfov, &camera.common.name).unwrap();
-			
-			app.canvas.set_draw_color(sdl3::pixels::Color::RGB(0, 0, 0));
-			app.canvas.clear();
-			match scene {
-			    Ok(ref list) => {
-				for item in list {
-				    item.draw(&mut app.canvas);
+                        app.canvas.set_draw_color(sdl3::pixels::Color::RGB(camera.common.color.r, camera.common.color.g, camera.common.color.b));
+                        app.canvas.clear();
+			let mut x = 0.0;
+			while x < camera.hfov as f32 {
+			    let mut y = 0.0;
+			    while y < camera.vfov as f32 {
+				match scene {
+				    Ok(ref list) => {
+					for item in list {
+					    app.canvas.set_draw_color(item.draw(camera, x, y, &lightsources));
+					    app.canvas.draw_point((x, y)).unwrap();
+					}
+				    }
+				    Err(ref e) => {
+					eprintln!("Error on reading objects: {}", e);
+				    }
 				}
+				y = y + 1.0;
 			    }
-			    Err(ref e) => {
-				eprintln!("Error on reading objects: {}", e);
-			    }
+			    x = x + 1.0;
 			}
-			app.canvas.present();
-			event_loop(&mut app);
-		    } else {
-			println!("-> Downcast failed.");
-		    }
-		}
-	    }
-	}
-	Err(e) => {
-	    eprintln!("Error on reading utils: {}", e);
-	}
+                        app.canvas.present();
+                        event_loop(&mut app);
+                    } else {
+                        println!("-> Downcast failed.");
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error on reading utils: {}", e);
+        }
     }
 }
 
@@ -87,4 +100,3 @@ pub fn event_loop(app: &mut SdlApp) {
         }
     }
 }
-

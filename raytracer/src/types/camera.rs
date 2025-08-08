@@ -1,10 +1,6 @@
-use crate::types::common::HasCommon;
-use crate::types::common::AsPoint;
 use crate::types::common::Common;
 use crate::types::common::Drawable;
-use crate::types::common::Point;
-use sdl3::render::Canvas;
-use sdl3::video::Window;
+use crate::types::common::HasCommon;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::any::Any;
@@ -18,15 +14,6 @@ pub struct Camera {
     pub fps: u32,
 }
 
-impl AsPoint for Camera {
-    fn as_point(&self) -> &Point {
-        &self.common.position
-    }
-    fn as_point_mut(&mut self) -> &mut Point {
-        &mut self.common.position
-    }
-}
-
 impl HasCommon for Camera {
     fn common(&self) -> &Common {
         &self.common
@@ -34,7 +21,14 @@ impl HasCommon for Camera {
 }
 
 impl Drawable for Camera {
-    fn draw(&self, canvas: &mut Canvas<Window>) {
+    fn draw(
+        &self,
+        cam: &crate::types::camera::Camera,
+        x: f32,
+        y: f32,
+        lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
+    ) -> sdl3::pixels::Color {
+        sdl3::pixels::Color::RGBA(0, 0, 0, 0)
     }
 
     fn as_any(&self) -> &dyn Any {

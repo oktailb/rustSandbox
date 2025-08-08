@@ -3,21 +3,13 @@
     "Common": {
       "Classification": "Circle",
       "Name": "ACME",
-      "Position": {
-        "X": 400,
-        "Y": 300,
-        "Z": 0
-      },
-      "Orientation": {
-        "X": 1,
-        "Y": 1,
-        "Z": 1
-      },
+      "Position": [400,300,0],
+      "Orientation": [1,1,1],
       "Color": {
         "R": 255,
         "G": 255,
         "B": 255,
-        "A": 0
+        "A": 255
       }
     },
     "Radius": 200
@@ -25,21 +17,13 @@
   {
     "Common": {
       "Classification": "Square",
-      "Name": "ACME",
-      "Position": {
-        "X": 40,
-        "Y": 30,
-        "Z": 0
-      },
-      "Orientation": {
-        "X": 1,
-        "Y": 1,
-        "Z": 1
-      },
+      "Name": "plop",
+      "Position": [40,30,0],
+      "Orientation": [1,1,1],
       "Color": {
         "R": 255,
         "G": 0,
-        "B": 255,
+        "B": 0,
         "A": 0
       }
     },
@@ -49,16 +33,8 @@
     "Common": {
       "Classification": "LightSource",
       "Name": "Spot 1",
-      "Position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 500
-      },
-      "Orientation": {
-        "X": 1,
-        "Y": 1,
-        "Z": 1
-      },
+      "Position": [0,0,500],
+      "Orientation": [1,1,1],
       "Color": {
         "R": 255,
         "G": 255,
@@ -72,20 +48,12 @@
     "Common": {
       "Classification": "Camera",
       "Name": "Practika",
-      "Position": {
-        "X": 0,
-        "Y": 0,
-        "Z": 450
-      },
-      "Orientation": {
-        "X": 1,
-        "Y": 1,
-        "Z": 1
-      },
+      "Position": [0,0,450],
+      "Orientation": [1,1,1],
       "Color": {
-        "R": 0,
-        "G": 0,
-        "B": 0,
+        "R": 255,
+        "G": 127,
+        "B": 63,
         "A": 0
       }
     },
