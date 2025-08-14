@@ -47,7 +47,7 @@ pub fn draw(
                     if let Some(camera) =
                         item.as_any().downcast_ref::<crate::types::camera::Camera>()
                     {
-                        let mut app = init(camera.hfov, camera.vfov, &camera.common.name).unwrap();
+                        let mut app = init(camera.hfov as u32, camera.vfov as u32, &camera.common.name).unwrap();
 
                         app.canvas.set_draw_color(sdl3::pixels::Color::RGB(camera.common.color.r, camera.common.color.g, camera.common.color.b));
                         app.canvas.clear();

@@ -4,12 +4,14 @@
       "Classification": "Circle",
       "Name": "ACME",
       "Position": [400,300,0],
-      "Orientation": [1,1,1],
+      "Forward": [1,1,1],
+      "Up": [1,1,1],
+      "Right": [1,1,1],
       "Color": {
-        "R": 255,
+        "R": 0,
         "G": 255,
-        "B": 255,
-        "A": 255
+        "B": 0,
+        "A": 0
       }
     },
     "Radius": 200
@@ -19,7 +21,9 @@
       "Classification": "Square",
       "Name": "plop",
       "Position": [40,30,0],
-      "Orientation": [1,1,1],
+      "Forward": [1,1,1],
+      "Up": [1,1,1],
+      "Right": [1,1,1],
       "Color": {
         "R": 255,
         "G": 0,
@@ -34,7 +38,9 @@
       "Classification": "LightSource",
       "Name": "Spot 1",
       "Position": [0,0,500],
-      "Orientation": [1,1,1],
+      "Forward": [1,1,1],
+      "Up": [1,1,1],
+      "Right": [1,1,1],
       "Color": {
         "R": 255,
         "G": 255,
@@ -49,7 +55,9 @@
       "Classification": "Camera",
       "Name": "Practika",
       "Position": [0,0,450],
-      "Orientation": [1,1,1],
+      "Forward": [1,1,1],
+      "Up": [1,1,1],
+      "Right": [1,1,1],
       "Color": {
         "R": 255,
         "G": 127,
@@ -59,6 +67,7 @@
     },
     "Fps": 25,
     "Hfov": 800,
-    "Vfov": 600
+    "Vfov": 600,
+    "Dist": 500
   }
 ]

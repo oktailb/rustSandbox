@@ -1,9 +1,21 @@
-use glam::{vec3, Vec3};
+use glam::Vec3;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::any::Any;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3Serde(pub Vec3);
+
+impl Vec3Serde {
+    pub fn to_vec3(&self) -> Vec3 {
+        Vec3::new(self.0.x, self.0.y, self.0.z)
+    }
+
+    /*
+    pub fn from_vec3(v: Vec3) -> Self {
+        Vec3Serde { x: v.x, y: v.y, z: v.z }
+}
+     */
+}
 
 impl Serialize for Vec3Serde {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -40,12 +52,23 @@ pub struct Common {
     pub classification: String,
     pub name: String,
     pub position: Vec3Serde,
-    pub orientation: Vec3Serde,
+    pub up: Vec3Serde,
+    pub forward: Vec3Serde,
+    pub right: Vec3Serde,
     pub color: Color,
 }
 
 pub trait HasCommon {
     fn common(&self) -> &Common;
+}
+
+pub struct Ray {
+    pub origin: Vec3,
+    pub direction: Vec3,
+}
+
+pub trait Intersectable {
+    fn intersect(&self, ray: &Ray) -> Option<f32>; // distance à l'intersection
 }
 
 pub trait Drawable: HasCommon {
@@ -62,4 +85,39 @@ pub trait Drawable: HasCommon {
     }
 
     fn as_any(&self) -> &dyn Any;
+
+    fn shade(
+        &self,
+        hit_point: Vec3,
+        normal: Vec3,
+        lightsources: &Result<Vec<Box<dyn Drawable>>, String>
+    ) -> sdl3::pixels::Color {
+        let base_color = sdl3::pixels::Color::RGB(200, 50, 50); // rouge par défaut
+
+        if let Ok(lights) = lightsources {
+            let mut intensity = 0.0;
+
+            for light in lights {
+                // On suppose que la lumière est un objet avec position
+                let pos = light.common().position.to_vec3();
+
+                let light_dir = (pos - hit_point).normalize();
+                let diff = normal.dot(light_dir).max(0.0);
+                intensity += diff;
+                
+            }
+
+            intensity = intensity.clamp(0.0, 1.0);
+
+            // On applique l'intensité à la couleur
+            sdl3::pixels::Color::RGB(
+                (base_color.r as f32 * intensity) as u8,
+                (base_color.g as f32 * intensity) as u8,
+                (base_color.b as f32 * intensity) as u8
+            )
+        } else {
+            base_color
+        }
+    }
 }
+

@@ -1,6 +1,7 @@
 use crate::types::common::HasCommon;
 use crate::types::common::Common;
 use crate::types::common::Drawable;
+use crate::types::common::Intersectable;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::any::Any;
@@ -20,26 +21,51 @@ impl HasCommon for Circle {
 
 impl Drawable for Circle {
     fn draw(&self, cam: &crate::types::camera::Camera, x: f32, y: f32, lightsources: &Result<Vec<Box<dyn Drawable>>, String>) -> sdl3::pixels::Color {
-	let mut ret = sdl3::pixels::Color::RGBA(0, 0, 0, 0);
-        let center = self.common.position;
+        let ray = cam.ray_for_pixel(x, y);
 	
-        let radius = self.radius;
-
-        let dist_x = (center.0.x - x).abs();
-        let dist_y = (center.0.y - y).abs();
-        let dist = (dist_x * dist_x + dist_y * dist_y).sqrt();
-        if dist <= radius {
-	    ret = sdl3::pixels::Color::RGBA(self.common.color.r,
-					    self.common.color.g,
-					    self.common.color.b,
-					    self.common.color.a
-	    );
+        if let Some(t) = self.intersect(&ray) {
+            let hit_point = ray.origin + ray.direction * t;
+            let normal = self.common.forward.to_vec3().normalize();
+            let color = self.shade(hit_point, normal, lightsources);
+            color
+        } else {
+            sdl3::pixels::Color::RGBA(0, 0, 0, 0)
         }
-	ret
     }
-
+    
+    
     fn as_any(&self) -> &dyn Any {
-        self
+	self
+    }
+}
+
+impl Intersectable for Circle {
+    fn intersect(&self, ray: &crate::types::common::Ray) -> Option<f32>{
+	let center = self.common.position.to_vec3();
+        let normal = self.common.forward.to_vec3().normalize();
+        let ray_origin = ray.origin;
+        let ray_dir = ray.direction.normalize();
+	    
+        let denom = normal.dot(ray_dir);
+        if denom.abs() < 1e-6 {
+            return None; // rayon parallèle au disque
+        }
+
+        let t = (center - ray_origin).dot(normal) / denom;
+        if t < 0.0 {
+            return None; // intersection derrière l'origine
+        }
+
+        // Point d'intersection
+        let hit_point = ray_origin + ray_dir * t;
+
+        // Vérification si à l'intérieur du disque
+        let dist_to_center = (hit_point - center).length();
+        if dist_to_center <= self.radius {
+            Some(t)
+        } else {
+            None
+        }
     }
 }
 

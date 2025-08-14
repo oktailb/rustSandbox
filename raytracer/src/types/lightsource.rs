@@ -21,12 +21,15 @@ impl HasCommon for LightSource {
 impl Drawable for LightSource {
     fn draw(
         &self,
-        cam: &crate::types::camera::Camera,
-        x: f32,
-        y: f32,
-        lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
+        _cam: &crate::types::camera::Camera,
+        _x: f32,
+        _y: f32,
+        _lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
     ) -> sdl3::pixels::Color {
-        sdl3::pixels::Color::RGBA(0, 0, 0, 0)
+        sdl3::pixels::Color::RGBA(self.common.color.r,
+				  self.common.color.g,
+				  self.common.color.b,
+				  self.common.color.a)
     }
 
     fn as_any(&self) -> &dyn Any {
