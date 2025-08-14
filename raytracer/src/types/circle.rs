@@ -27,9 +27,11 @@ impl Drawable for Circle {
             let hit_point = ray.origin + ray.direction * t;
             let normal = self.common.forward.to_vec3().normalize();
             let color = self.shade(hit_point, normal, lightsources);
+	    println!("{}x{} ...", x ,y);
+
             color
         } else {
-            sdl3::pixels::Color::RGBA(0, 0, 0, 0)
+            sdl3::pixels::Color::RGBA(0, 0, 0, 255)
         }
     }
     

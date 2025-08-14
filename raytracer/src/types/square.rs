@@ -29,7 +29,7 @@ impl Drawable for Square {
             let color = self.shade(hit_point, normal, lightsources);
             color
         } else {
-            sdl3::pixels::Color::RGBA(0, 0, 0, 0)
+            sdl3::pixels::Color::RGBA(0, 0, 0, 255)
         }
     }
 

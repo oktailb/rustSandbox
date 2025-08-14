@@ -92,13 +92,12 @@ pub trait Drawable: HasCommon {
         normal: Vec3,
         lightsources: &Result<Vec<Box<dyn Drawable>>, String>
     ) -> sdl3::pixels::Color {
-        let base_color = sdl3::pixels::Color::RGB(200, 50, 50); // rouge par défaut
+        let base_color = sdl3::pixels::Color::RGBA(255, 255, 255, 255);
 
         if let Ok(lights) = lightsources {
             let mut intensity = 0.0;
 
             for light in lights {
-                // On suppose que la lumière est un objet avec position
                 let pos = light.common().position.to_vec3();
 
                 let light_dir = (pos - hit_point).normalize();
@@ -108,12 +107,12 @@ pub trait Drawable: HasCommon {
             }
 
             intensity = intensity.clamp(0.0, 1.0);
-
-            // On applique l'intensité à la couleur
-            sdl3::pixels::Color::RGB(
+	    println!("{}", intensity);
+            sdl3::pixels::Color::RGBA(
                 (base_color.r as f32 * intensity) as u8,
                 (base_color.g as f32 * intensity) as u8,
-                (base_color.b as f32 * intensity) as u8
+                (base_color.b as f32 * intensity) as u8,
+                (base_color.a as f32 * intensity) as u8
             )
         } else {
             base_color

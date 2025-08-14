@@ -49,12 +49,15 @@ pub fn draw(
                     {
                         let mut app = init(camera.hfov as u32, camera.vfov as u32, &camera.common.name).unwrap();
 
-                        app.canvas.set_draw_color(sdl3::pixels::Color::RGB(camera.common.color.r, camera.common.color.g, camera.common.color.b));
+                        app.canvas.set_draw_color(sdl3::pixels::Color::RGBA(camera.common.color.r,
+									    camera.common.color.g,
+									    camera.common.color.b,
+									    camera.common.color.a));
                         app.canvas.clear();
 			let mut x = 0.0;
-			while x < camera.hfov as f32 {
+			while x < camera.hfov {
 			    let mut y = 0.0;
-			    while y < camera.vfov as f32 {
+			    while y < camera.vfov {
 				match scene {
 				    Ok(ref list) => {
 					for item in list {
