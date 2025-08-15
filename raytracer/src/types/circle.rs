@@ -27,7 +27,7 @@ impl Drawable for Circle {
             let hit_point = ray.origin + ray.direction * t;
             let normal = self.common.forward.to_vec3().normalize();
             let color = self.shade(hit_point, normal, lightsources);
-	    println!("{}x{} ...", x ,y);
+//	    println!("{}x{} ...", x ,y);
 
             color
         } else {
@@ -47,20 +47,23 @@ impl Intersectable for Circle {
         let normal = self.common.forward.to_vec3().normalize();
         let ray_origin = ray.origin;
         let ray_dir = ray.direction.normalize();
-	    
+	//println!("normal = {}, dir = {}", normal, ray.direction);
         let denom = normal.dot(ray_dir);
         if denom.abs() < 1e-6 {
+//	    println!("parallel {}: ", denom);
             return None; // rayon parallèle au disque
         }
 
+//	println!("denom = {}", denom);
         let t = (center - ray_origin).dot(normal) / denom;
         if t < 0.0 {
+//	    println!("behind: {}", t);
             return None; // intersection derrière l'origine
         }
 
         // Point d'intersection
         let hit_point = ray_origin + ray_dir * t;
-
+//	println!("t = {}", t);
         // Vérification si à l'intérieur du disque
         let dist_to_center = (hit_point - center).length();
         if dist_to_center <= self.radius {

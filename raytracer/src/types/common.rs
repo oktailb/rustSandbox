@@ -39,6 +39,7 @@ impl<'de> Deserialize<'de> for Vec3Serde {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
+#[derive(Clone)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -48,6 +49,7 @@ pub struct Color {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
+#[derive(Clone)]
 pub struct Common {
     pub classification: String,
     pub name: String,
@@ -107,7 +109,6 @@ pub trait Drawable: HasCommon {
             }
 
             intensity = intensity.clamp(0.0, 1.0);
-	    println!("{}", intensity);
             sdl3::pixels::Color::RGBA(
                 (base_color.r as f32 * intensity) as u8,
                 (base_color.g as f32 * intensity) as u8,

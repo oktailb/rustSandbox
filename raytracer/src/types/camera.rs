@@ -7,6 +7,7 @@ use std::any::Any;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
+#[derive(Clone)]
 pub struct Camera {
     pub common: Common,
     pub hfov: f32,

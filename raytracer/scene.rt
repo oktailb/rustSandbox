@@ -1,0 +1,73 @@
+[
+  {
+    "Common": {
+      "Classification": "Circle",
+      "Name": "GreenCircle",
+      "Position": [600, -600, -50],
+      "Forward": [0, 0, 1],
+      "Up": [0, 1, 0],
+      "Right": [1, 0, 0],
+      "Color": {
+        "R": 0,
+        "G": 255,
+        "B": 0,
+        "A": 255
+      }
+    },
+    "Radius": 100
+  },
+  {
+    "Common": {
+      "Classification": "Square",
+      "Name": "RedSquare",
+      "Position": [500, 500, 0],
+      "Forward": [0, 0, 1],
+      "Up": [0, 1, 0],
+      "Right": [1, 0, 0],
+      "Color": {
+        "R": 255,
+        "G": 0,
+        "B": 0,
+        "A": 255
+      }
+    },
+    "Cote": 100
+  },
+  {
+    "Common": {
+      "Classification": "LightSource",
+      "Name": "MainLight",
+      "Position": [-200, 200, 200],
+      "Forward": [0, -1, -1],
+      "Up": [0, 1, 0],
+      "Right": [1, 0, 0],
+      "Color": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 255
+      }
+    },
+    "Mode": "Specular"
+  },
+  {
+    "Common": {
+      "Classification": "Camera",
+      "Name": "MainCamera",
+      "Position": [0, 0, 30],
+      "Forward": [0, 0, -500],
+      "Up": [0, 1, 0],
+      "Right": [10, 0, 0],
+      "Color": {
+        "R": 255,
+        "G": 255,
+        "B": 255,
+        "A": 255
+      }
+    },
+    "Fps": 25,
+    "Hfov": 800,
+    "Vfov": 600,
+    "Dist": 500
+  }
+]

@@ -1,3 +1,4 @@
+use crate::types::camera::Camera;
 use crate::types::common::Drawable;
 extern crate sdl3;
 
@@ -44,7 +45,7 @@ pub fn draw(
         Ok(environement) => {
             for item in environement {
                 if item.classification() == "Camera" {
-                    if let Some(camera) =
+                    if let Some(mut camera) =
                         item.as_any().downcast_ref::<crate::types::camera::Camera>()
                     {
                         let mut app = init(camera.hfov as u32, camera.vfov as u32, &camera.common.name).unwrap();
@@ -74,7 +75,7 @@ pub fn draw(
 			    x = x + 1.0;
 			}
                         app.canvas.present();
-                        event_loop(&mut app);
+                        camera = &event_loop(&mut app, camera.clone());
                     } else {
                         println!("-> Downcast failed.");
                     }
@@ -87,9 +88,9 @@ pub fn draw(
     }
 }
 
-pub fn event_loop(app: &mut SdlApp) {
+pub fn event_loop(app: &mut SdlApp, mut camera: Camera) -> Camera {
     let event_pump = &mut app.event_pump;
-
+    
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -98,8 +99,26 @@ pub fn event_loop(app: &mut SdlApp) {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'running,
+		Event::KeyDown {
+                    keycode: Some(Keycode::Up),
+                    ..
+                } => { camera.common.forward.0[0] += 1.0; continue;},
+		Event::KeyDown {
+                    keycode: Some(Keycode::Down),
+                    ..
+                } => { camera.common.forward.0[0] -= 1.0; continue;},
+		Event::KeyDown {
+                    keycode: Some(Keycode::Right),
+                    ..
+                } => { camera.common.right.0[0] += 1.0; continue;},
+		Event::KeyDown {
+                    keycode: Some(Keycode::Left),
+                    ..
+                } => { camera.common.right.0[0] -= 1.0; continue;},
+		
                 _ => {}
             }
-        }
+	}
     }
+    camera
 }
