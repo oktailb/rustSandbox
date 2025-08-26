@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::any::Any;
 
+use super::lightsource::LightSource;
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 #[derive(Clone)]
@@ -50,12 +52,14 @@ impl Drawable for Camera {
         _cam: &crate::types::camera::Camera,
         _x: f32,
         _y: f32,
-        _lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
+        _lightsources: &Vec<LightSource>,
     ) -> sdl3::pixels::Color {
-        sdl3::pixels::Color::RGBA(self.common.color.r,
-				  self.common.color.g,
-				  self.common.color.b,
-				  self.common.color.a)
+        sdl3::pixels::Color::RGBA(
+            self.common.color.r,
+            self.common.color.g,
+            self.common.color.b,
+            self.common.color.a,
+        )
     }
 
     fn as_any(&self) -> &dyn Any {

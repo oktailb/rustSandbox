@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use crate::types::common::Drawable;
+use crate::types::camera::Camera;
+use crate::types::lightsource::LightSource;
 
 type DrawableFactory = fn(Value) -> Result<Box<dyn Drawable>, String>;
 
@@ -18,7 +20,7 @@ fn build_drawable_registry() -> HashMap<&'static str, DrawableFactory> {
     registry
 }
 
-pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>, Vec<Box<dyn Drawable>>), String> {
+pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>>, Vec<Camera>, Vec<LightSource>), String> {
     let file = File::open(rt_file).expect("Could not open file.");
     let json_reader = BufReader::new(file);
     
@@ -27,8 +29,8 @@ pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>
         serde_json::from_reader(json_reader).expect("JSON was not well-formatted");
 
     let mut drawables: Vec<Box<dyn Drawable>> = Vec::new();
-    let mut cameras: Vec<Box<dyn Drawable>> = Vec::new();
-    let mut lightsources: Vec<Box<dyn Drawable>> = Vec::new();
+    let mut cameras: Vec<Camera> = Vec::new();
+    let mut lightsources: Vec<LightSource> = Vec::new();
 
     for v in values {
         let classification = v["Common"]["Classification"]
@@ -40,10 +42,12 @@ pub fn build_drawables_from_json(rt_file: &str) -> Result<(Vec<Box<dyn Drawable>
             let drawable = factory_fn(v)?;
             
             if classification == "Camera"{
-                cameras.push(drawable);
+		let camera = drawable.as_any().downcast_ref::<crate::types::camera::Camera>().unwrap();
+                cameras.push(camera.clone());
 	    }
 	    else if classification == "LightSource" {
-                lightsources.push(drawable);
+		let lightsource = drawable.as_any().downcast_ref::<crate::types::lightsource::LightSource>().unwrap();
+                lightsources.push(lightsource.clone());
             } else {
                 drawables.push(drawable);
             }

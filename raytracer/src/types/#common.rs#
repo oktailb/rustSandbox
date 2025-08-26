@@ -13,10 +13,10 @@ impl Vec3Serde {
     }
 
     /*
-    pub fn from_vec3(v: Vec3) -> Self {
-        Vec3Serde { x: v.x, y: v.y, z: v.z }
-}
-     */
+        pub fn from_vec3(v: Vec3) -> Self {
+            Vec3Serde { x: v.x, y: v.y, z: v.z }
+    }
+         */
 }
 
 impl Serialize for Vec3Serde {
@@ -94,28 +94,30 @@ pub trait Drawable: HasCommon {
         &self,
         hit_point: Vec3,
         normal: Vec3,
-        lightsources: &Vec<LightSource>,
+        lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
     ) -> sdl3::pixels::Color {
         let base_color = sdl3::pixels::Color::RGBA(255, 255, 255, 255);
-	
-        let mut intensity = 0.0;
-	
-        for light in lightsources {
-            let pos = light.common().position.to_vec3();
-	    
-            let light_dir = (pos - hit_point).normalize();
-            let diff = normal.dot(light_dir).max(0.0);
-            intensity += diff;
-            
+
+        if let Ok(lights) = lightsources {
+            let mut intensity = 0.0;
+
+            for light in lights {
+                let pos = light.common().position.to_vec3();
+
+                let light_dir = (pos - hit_point).normalize();
+                let diff = normal.dot(light_dir).max(0.0);
+                intensity += diff;
+            }
+
+            intensity = intensity.clamp(0.0, 1.0);
+            sdl3::pixels::Color::RGBA(
+                (base_color.r as f32 * intensity) as u8,
+                (base_color.g as f32 * intensity) as u8,
+                (base_color.b as f32 * intensity) as u8,
+                (base_color.a as f32 * intensity) as u8,
+            )
+        } else {
+            base_color
         }
-	
-        intensity = intensity.clamp(0.0, 1.0);
-        sdl3::pixels::Color::RGBA(
-            (base_color.r as f32 * intensity) as u8,
-            (base_color.g as f32 * intensity) as u8,
-            (base_color.b as f32 * intensity) as u8,
-            (base_color.a as f32 * intensity) as u8
-        )
     }
 }
-

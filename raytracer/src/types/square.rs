@@ -1,10 +1,12 @@
-use crate::types::common::HasCommon;
 use crate::types::common::Common;
 use crate::types::common::Drawable;
+use crate::types::common::HasCommon;
 use crate::types::common::Intersectable;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::any::Any;
+
+use super::lightsource::LightSource;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
@@ -20,9 +22,15 @@ impl HasCommon for Square {
 }
 
 impl Drawable for Square {
-    fn draw(&self, cam: &crate::types::camera::Camera, x: f32, y: f32, lightsources: &Result<Vec<Box<dyn Drawable>>, String>) -> sdl3::pixels::Color {
+    fn draw(
+        &self,
+        cam: &crate::types::camera::Camera,
+        x: f32,
+        y: f32,
+        lightsources: &Vec<LightSource>,
+    ) -> sdl3::pixels::Color {
         let ray = cam.ray_for_pixel(x, y);
-	
+
         if let Some(t) = self.intersect(&ray) {
             let hit_point = ray.origin + ray.direction * t;
             let normal = self.common.forward.to_vec3().normalize();
@@ -39,12 +47,12 @@ impl Drawable for Square {
 }
 
 impl Intersectable for Square {
-    fn intersect(&self, ray: &crate::types::common::Ray) -> Option<f32>{
-	let center = self.common.position.to_vec3();
+    fn intersect(&self, ray: &crate::types::common::Ray) -> Option<f32> {
+        let center = self.common.position.to_vec3();
         let normal = self.common.forward.to_vec3().normalize();
         let ray_origin = ray.origin;
         let ray_dir = ray.direction.normalize();
-	    
+
         let denom = normal.dot(ray_dir);
         if denom.abs() < 1e-6 {
             return None; // rayon parallèle au disque

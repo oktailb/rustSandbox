@@ -1,9 +1,9 @@
 mod conf;
-mod draw;
+mod drawer;
 mod types;
 
 use conf::build_drawables_from_json;
-use draw::draw;
+use drawer::{Drawer, SdlApp};
 use std::env;
 extern crate sdl3;
 
@@ -13,7 +13,10 @@ fn main() -> Result<(), String> {
         let rt_file = &args[1];
 
         let (scene, cameras, lightsources) = build_drawables_from_json(rt_file)?;
-        draw(Ok(scene), Ok(cameras), Ok(lightsources));
+	let mut drawer = SdlApp::new();
+	drawer.prepare_scenes(cameras);
+	drawer.main_loop(&scene, &lightsources);
+
     } else {
         println!("Usage: {} ...", &args[0]);
     }

@@ -7,6 +7,7 @@ use std::any::Any;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
+#[derive(Clone)]
 pub struct LightSource {
     pub common: Common,
     mode: String,
@@ -24,7 +25,7 @@ impl Drawable for LightSource {
         _cam: &crate::types::camera::Camera,
         _x: f32,
         _y: f32,
-        _lightsources: &Result<Vec<Box<dyn Drawable>>, String>,
+        _lightsources: &Vec<LightSource>,
     ) -> sdl3::pixels::Color {
         sdl3::pixels::Color::RGBA(self.common.color.r,
 				  self.common.color.g,
