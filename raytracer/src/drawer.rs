@@ -85,9 +85,10 @@ impl Drawer for SdlApp {
             let canvas = self.canvas.get_mut(name).unwrap();
 	    canvas.clear();
             let mut x = 0;
-            while x < window.size().0 {
+	    let size = window.size();
+            while x < size.0 {
 		let mut y = 0;
-		while y < window.size().1 {
+		while y < size.1 {
                     for item in scene {
 			canvas.set_draw_color(
 			    item.draw(
@@ -112,6 +113,7 @@ impl Drawer for SdlApp {
 	scene: &Vec<Box<dyn Drawable>>,
 	lightsources: &Vec<LightSource>,
     ) {
+	let step = 0.1;
 	'running: loop {
 	    for event in self.event_pump.poll_iter() {
 		match event {
@@ -125,7 +127,7 @@ impl Drawer for SdlApp {
 			..
 		    } => {
 			for (_name, camera) in &mut self.cameras {
-			    camera.common.forward.0[0] += 1.0;
+			    camera.common.forward.0[0] += step;
 			}
 			continue;
 		    }
@@ -134,7 +136,7 @@ impl Drawer for SdlApp {
 			..
 		    } => {
 			for (_name, camera) in &mut self.cameras {
-			    camera.common.forward.0[0] -= 1.0;
+			    camera.common.forward.0[0] -= step;
 			}
 			continue;
 		    }
@@ -143,7 +145,7 @@ impl Drawer for SdlApp {
 			..
 		    } => {
 			for (_name, camera) in &mut self.cameras {
-			    camera.common.right.0[0] += 1.0;
+			    camera.common.right.0[0] += step;
 			}
 			continue;
 		    }
@@ -152,7 +154,7 @@ impl Drawer for SdlApp {
 			..
 		    } => {
 			for (_name, camera) in &mut self.cameras {
-			    camera.common.right.0[0] -= 1.0;
+			    camera.common.right.0[0] -= step;
 			}
 			continue;
 		    }
@@ -161,7 +163,7 @@ impl Drawer for SdlApp {
 		}
 	    }
 	    self.draw(scene, lightsources);
-	    thread::sleep(Duration::from_millis(10));
+	    thread::sleep(Duration::from_millis(1));
 	}
     }
 }
