@@ -107,7 +107,7 @@ impl Drawer for SdlApp {
             canvas.present();
 	}
     }
-
+    
     fn main_loop(
 	&mut self,
 	scene: &Vec<Box<dyn Drawable>>,
@@ -115,55 +115,46 @@ impl Drawer for SdlApp {
     ) {
 	let step = 0.1;
 	'running: loop {
-	    for event in self.event_pump.poll_iter() {
+            for event in self.event_pump.poll_iter() {
 		match event {
-		    Event::Quit { .. }
-		    | Event::KeyDown {
+                    Event::Quit { .. }
+                    | Event::KeyDown {
 			keycode: Some(Keycode::Escape),
 			..
-		    } => break 'running,
-		    Event::KeyDown {
-			keycode: Some(Keycode::Up),
-			..
-		    } => {
-			for (_name, camera) in &mut self.cameras {
-			    camera.common.forward.0[0] += step;
-			}
-			continue;
-		    }
-		    Event::KeyDown {
-			keycode: Some(Keycode::Down),
-			..
-		    } => {
-			for (_name, camera) in &mut self.cameras {
-			    camera.common.forward.0[0] -= step;
-			}
-			continue;
-		    }
-		    Event::KeyDown {
-			keycode: Some(Keycode::Right),
-			..
-		    } => {
-			for (_name, camera) in &mut self.cameras {
-			    camera.common.right.0[0] += step;
-			}
-			continue;
-		    }
-		    Event::KeyDown {
-			keycode: Some(Keycode::Left),
-			..
-		    } => {
-			for (_name, camera) in &mut self.cameras {
-			    camera.common.right.0[0] -= step;
-			}
-			continue;
-		    }
+                    } => break 'running,
 		    
-		    _ => {}
+                    Event::KeyDown { keycode: Some(key), .. } => {
+			match key {
+                            Keycode::Up => {
+				for (_name, camera) in &mut self.cameras {
+                                    camera.common.forward.0[0] += step;
+				}
+                            }
+                            Keycode::Down => {
+				for (_name, camera) in &mut self.cameras {
+                                    camera.common.forward.0[0] -= step;
+				}
+                            }
+                            Keycode::Right => {
+				for (_name, camera) in &mut self.cameras {
+                                    camera.common.right.0[0] += step;
+				}
+                            }
+                            Keycode::Left => {
+				for (_name, camera) in &mut self.cameras {
+                                    camera.common.right.0[0] -= step;
+				}
+                            }
+                            _ => {}
+			}
+                    }
+		    
+                    _ => {}
 		}
-	    }
-	    self.draw(scene, lightsources);
-	    thread::sleep(Duration::from_millis(1));
+            }
+	    
+            self.draw(scene, lightsources);
+            thread::sleep(Duration::from_millis(1));
 	}
     }
 }
